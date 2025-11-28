@@ -1,147 +1,6 @@
 {
-  "name": "Notion Backup to gDrive",
+  "name": "Notion Backup v3",
   "nodes": [
-    {
-      "parameters": {
-        "fieldToSplitOut": "id, name",
-        "include": "={{ $json.name }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        160,
-        224
-      ],
-      "id": "456598c6-3548-42db-8cfe-44d2e0d6271c",
-      "name": "Split Out"
-    },
-    {
-      "parameters": {
-        "resource": "databasePage",
-        "operation": "getAll",
-        "databaseId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "returnAll": true,
-        "filterType": "=",
-        "options": {
-          "downloadFiles": false,
-          "sort": {
-            "sortValue": [
-              {
-                "timestamp": true,
-                "key": "last_edited_time",
-                "direction": "descending"
-              }
-            ]
-          }
-        }
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        352,
-        224
-      ],
-      "id": "cf93c104-d763-49a7-8cab-39ecefb48011",
-      "name": "Get many database pages",
-      "credentials": {
-        "notionApi": {
-          "id": "2gAPhzbsQIvdY5Gi",
-          "name": "Notion account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "database",
-        "operation": "getAll",
-        "returnAll": true
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        -32,
-        224
-      ],
-      "id": "5943695b-9008-42f5-a4b2-5480c15c1f31",
-      "name": "Get many databases",
-      "credentials": {
-        "notionApi": {
-          "id": "2gAPhzbsQIvdY5Gi",
-          "name": "Notion account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "a05f4a53-79fe-4812-8892-11c6cfb3a135",
-              "name": "parent_id",
-              "value": "={{ $('Split Out').item.json.id }}",
-              "type": "string"
-            },
-            {
-              "id": "174b936f-d5d1-4419-848d-b08ee7c17f49",
-              "name": "parent_name",
-              "value": "={{ $('Split Out').item.json.name }}",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "include": "selected",
-        "includeFields": "id, name, url",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        544,
-        224
-      ],
-      "id": "05d65c60-4500-4438-a5d8-e8a3e987d8cc",
-      "name": "set parent fields"
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "id, name, url, parent_id, parent_name",
-        "include": "=parent_id, parent_name",
-        "options": {
-          "destinationFieldName": ""
-        }
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        736,
-        224
-      ],
-      "id": "f1d179d0-c40d-4793-9471-038a1088e54d",
-      "name": "filter fields to output"
-    },
-    {
-      "parameters": {
-        "options": {
-          "fileName": "=notion_notes.csv"
-        }
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [
-        928,
-        224
-      ],
-      "id": "27d19f71-ae14-46a1-b5e3-0b74cf86262a",
-      "name": "export structure CSV",
-      "executeOnce": false
-    },
     {
       "parameters": {
         "method": "POST",
@@ -188,10 +47,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        160,
-        448
+        368,
+        896
       ],
-      "id": "a08d552d-e4eb-4c45-b0b5-9c63d06a68a9",
+      "id": "eec87883-6f1b-4f13-bc13-d676ef3e5551",
       "name": "search for updated pages",
       "credentials": {
         "notionApi": {
@@ -201,44 +60,14 @@
       }
     },
     {
-      "parameters": {
-        "name": "notion_notes.csv",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1qQESKpg9Bw0w58_2FbwCR90EzNYm9QLx",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        1120,
-        224
-      ],
-      "id": "d155adab-713e-42b2-8cad-07fbfb35bb69",
-      "name": "Upload file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "W31bpRb6Hj2XV7Bw",
-          "name": "GDrive OAuth"
-        }
-      }
-    },
-    {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -352,
-        352
+        -416,
+        896
       ],
-      "id": "bc63e18a-6ebb-416c-8152-582f26d49790",
+      "id": "52ef014c-edda-4ba4-90f7-5ef2b43145b0",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -249,10 +78,10 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        352,
-        448
+        -192,
+        1136
       ],
-      "id": "7e264b40-4184-44dc-a4a4-374da4a43ba2",
+      "id": "54d59757-bb3f-4d46-8f87-1fa4b55f086a",
       "name": "Iterate through results"
     },
     {
@@ -288,6 +117,24 @@
               "name": "last_edited_time",
               "value": "={{ $json.last_edited_time }}",
               "type": "string"
+            },
+            {
+              "id": "491212ec-578c-469e-aeea-c719dda3e1fc",
+              "name": "parent_type",
+              "value": "={{ $json.parent.type }}",
+              "type": "string"
+            },
+            {
+              "id": "9bf80b06-8ef7-4a20-9b2e-adbf5427607e",
+              "name": "parent_db_id",
+              "value": "={{ $json.parent.database_id }}",
+              "type": "string"
+            },
+            {
+              "id": "3eb9fe4a-e615-40a6-bc9d-3e208f57fc86",
+              "name": "parent_page_id",
+              "value": "={{ $json.parent.page_id }}",
+              "type": "string"
             }
           ]
         },
@@ -296,10 +143,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        544,
-        448
+        -16,
+        1136
       ],
-      "id": "c60cf540-c76a-4fc1-a086-597591d99920",
+      "id": "6b5cdcd1-51e8-422b-a240-7c6f9d39ae90",
       "name": "Output Fields"
     },
     {
@@ -329,10 +176,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        736,
-        448
+        176,
+        1136
       ],
-      "id": "3e3b43c9-7f55-4acd-affc-4afecfc86014",
+      "id": "dac2b425-1e8a-472f-af10-976ad3138ce4",
       "name": "Filter for limited days"
     },
     {
@@ -356,6 +203,18 @@
               "name": "size",
               "value": "10",
               "type": "string"
+            },
+            {
+              "id": "72b4e9aa-78ae-4bfe-9858-15be57a69533",
+              "name": "parent_keys",
+              "value": "{}",
+              "type": "object"
+            },
+            {
+              "id": "ae4d69ad-0ee1-4590-9d58-658d307f5d00",
+              "name": "",
+              "value": "",
+              "type": "string"
             }
           ]
         },
@@ -364,10 +223,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -32,
-        448
+        -208,
+        896
       ],
-      "id": "5d1c5d1b-f3a3-4175-9be2-fd87d5f0e06c",
+      "id": "a25275dd-e7bc-40b7-897b-5295c42d8e1b",
       "name": "setEnvs"
     },
     {
@@ -389,11 +248,11 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        928,
-        448
+        -16,
+        896
       ],
-      "id": "d7585956-202a-491d-a5f9-d9a0fe10e242",
-      "name": "Clear sheet",
+      "id": "8cfa5154-5e62-40a8-ae51-45cf5d56d78e",
+      "name": "Clear pages",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "HbIIDbVPa0EOs8NQ",
@@ -406,8 +265,8 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o/edit?gid=664741908#gid=664741908",
-          "mode": "url"
+          "value": "1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o",
+          "mode": "id"
         },
         "sheetName": {
           "__rl": true,
@@ -417,7 +276,7 @@
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o/edit#gid=664741908"
         },
         "columns": {
-          "mappingMode": "autoMapInputData",
+          "mappingMode": "defineBelow",
           "value": {},
           "matchingColumns": [
             "id"
@@ -440,8 +299,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "title",
@@ -450,9 +308,69 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_edited_time",
+              "displayName": "last_edited_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        1136
+      ],
+      "id": "e74a0086-6251-4a5d-8bf4-077f86335286",
+      "name": "update pages",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HbIIDbVPa0EOs8NQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2071501476,
+          "mode": "list",
+          "cachedResultName": "parents",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o/edit#gid=2071501476"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "url": "={{ $json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
             {
               "id": "url",
               "displayName": "url",
@@ -464,8 +382,8 @@
               "removed": false
             },
             {
-              "id": "last_edited_time",
-              "displayName": "last_edited_time",
+              "id": "parent_type",
+              "displayName": "parent_type",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -477,18 +395,287 @@
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        1520
+      ],
+      "id": "c443be1e-2111-41c3-b7f6-1866d91134fa",
+      "name": "update parents",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HbIIDbVPa0EOs8NQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "url",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        176,
+        1344
+      ],
+      "id": "c9cde324-8c88-43d8-be52-ca16a7b2e080",
+      "name": "Remove Dup Parent DB"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "=url",
         "options": {
-          "cellFormat": "USER_ENTERED"
+          "removeOtherFields": false
+        }
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        176,
+        1520
+      ],
+      "id": "9a2cfbb6-9d70-45ce-9f69-2f5c1619df29",
+      "name": "Remove Dup Page"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "578c1859-59a7-46ad-b325-cd10f4bf9df6",
+              "leftValue": "={{ $json.parent_type }}",
+              "rightValue": "=workspace",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        1680
+      ],
+      "id": "b485f3cc-c365-42b1-95db-3e73fea1f411",
+      "name": "Top Level Pages"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5988c3cc-e4f4-4df9-9cd1-b77449916f8c",
+              "leftValue": "={{ $json.parent_db_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        1344
+      ],
+      "id": "126311dc-62d3-4677-87e2-092ae26aa52e",
+      "name": "Filter for DB"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5988c3cc-e4f4-4df9-9cd1-b77449916f8c",
+              "leftValue": "={{ $json.parent_page_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        1520
+      ],
+      "id": "3932ea9c-ece8-4fee-935a-f616f59eb6a5",
+      "name": "Filter for Page"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1f30d026-ffd1-45df-9f2d-820c8f350ddb",
+              "name": "parent_type",
+              "value": "={{ $json.parent_type }}",
+              "type": "string"
+            },
+            {
+              "id": "95873b6c-df04-48d5-ace9-ad45b3e600ec",
+              "name": "url",
+              "value": "=https://www.notion.so/{{ ($json.parent_db_id).replaceAll('-','')}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        1344
+      ],
+      "id": "eb91a987-a4ec-4063-9a22-567a2ca93d27",
+      "name": "output parent DB"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "57b9a694-0a57-419d-8433-6220c28c5951",
+              "name": "parent_type",
+              "value": "={{ $json.parent_type }}",
+              "type": "string"
+            },
+            {
+              "id": "fa0cd0f4-7ffd-4832-ac68-2c66687f5ff0",
+              "name": "url",
+              "value": "=https://www.notion.so/{{ ($json.parent_page_id).replaceAll('-','')}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        1520
+      ],
+      "id": "ebfe9c73-216e-4539-b1ae-4f5012bea77f",
+      "name": "output parent page"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1070c82-fb98-41a5-9535-bc9104723464",
+              "name": "parent_type",
+              "value": "={{ $json.parent_type }}",
+              "type": "string"
+            },
+            {
+              "id": "d7751d5a-9fa3-4042-ada2-14ce6cc0ac43",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "b7847715-b009-4b33-a809-4b05f75fa5fa",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        1680
+      ],
+      "id": "b2e38783-5a12-4d19-9de3-85fbdd89e9ec",
+      "name": "output self url"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        368,
+        1504
+      ],
+      "id": "7daca1df-940c-4761-9ff1-e2682d4fa3ba",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2071501476,
+          "mode": "list",
+          "cachedResultName": "parents",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkb8gZz3TLEIqdpKgSyxV7rKyTezJBAY4NhNaS6EM0o/edit#gid=2071501476"
         }
       },
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1120,
-        448
+        176,
+        896
       ],
-      "id": "7308c2e2-457e-419d-850a-a1bba38a9b9a",
-      "name": "Append row in sheet",
+      "id": "a431fa40-6652-4a07-8679-3ff245830156",
+      "name": "Clear parents",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "HbIIDbVPa0EOs8NQ",
@@ -499,72 +686,6 @@
   ],
   "pinData": {},
   "connections": {
-    "Split Out": {
-      "main": [
-        [
-          {
-            "node": "Get many database pages",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get many database pages": {
-      "main": [
-        [
-          {
-            "node": "set parent fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get many databases": {
-      "main": [
-        [
-          {
-            "node": "Split Out",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set parent fields": {
-      "main": [
-        [
-          {
-            "node": "filter fields to output",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "filter fields to output": {
-      "main": [
-        [
-          {
-            "node": "export structure CSV",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "export structure CSV": {
-      "main": [
-        [
-          {
-            "node": "Upload file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "search for updated pages": {
       "main": [
         [
@@ -576,19 +697,9 @@
         ]
       ]
     },
-    "Upload file": {
-      "main": [
-        []
-      ]
-    },
     "When clicking ‘Execute workflow’": {
       "main": [
         [
-          {
-            "node": "Get many databases",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "setEnvs",
             "type": "main",
@@ -623,7 +734,22 @@
       "main": [
         [
           {
-            "node": "Clear sheet",
+            "node": "update pages",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter for DB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter for Page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Top Level Pages",
             "type": "main",
             "index": 0
           }
@@ -634,18 +760,133 @@
       "main": [
         [
           {
-            "node": "search for updated pages",
+            "node": "Clear pages",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Clear sheet": {
+    "Clear pages": {
       "main": [
         [
           {
-            "node": "Append row in sheet",
+            "node": "Clear parents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update parents": {
+      "main": [
+        []
+      ]
+    },
+    "Remove Dup Parent DB": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top Level Pages": {
+      "main": [
+        [
+          {
+            "node": "output self url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Dup Page": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter for DB": {
+      "main": [
+        [
+          {
+            "node": "output parent DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter for Page": {
+      "main": [
+        [
+          {
+            "node": "output parent page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output parent page": {
+      "main": [
+        [
+          {
+            "node": "Remove Dup Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output parent DB": {
+      "main": [
+        [
+          {
+            "node": "Remove Dup Parent DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output self url": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "update parents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear parents": {
+      "main": [
+        [
+          {
+            "node": "search for updated pages",
             "type": "main",
             "index": 0
           }
@@ -657,11 +898,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "305bced8-35e9-4962-a380-be4c6eac74a2",
+  "versionId": "a6a2a0cd-bf4c-4168-afb9-2439d4a5d370",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d532cac2f2fb92b6dc742f3aad9f5fa44adbf1327f6052a9488ddfddbec2ade3"
   },
-  "id": "VdM8q1aYlAXVO4jb",
+  "id": "7PLhL7CKC4IdPVGC",
   "tags": []
 }
