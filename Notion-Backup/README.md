@@ -23,7 +23,10 @@
 - output links to google sheets for further operation
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0382fbb (notion backup v3)
 ## Lesson Learned
 - google service accounts don't have access to google drive, need to use google oauth2
 - google drive and google sheet are different APIs in GCP.
@@ -32,5 +35,8 @@
 - notion url: remove '-' in page id for page uri
 - browser-use cloud service could help with browser automation with provided login credentials, but it needs subscription
 - browser-use local version: it's easier to set up with docker. otherwise may encounter various env, package, dependency issue.
+<<<<<<< HEAD
 <img width="923" height="671" alt="v3 workflow" src="https://github.com/user-attachments/assets/0962810c-7437-4e48-819d-98c384524b33" />
 <img width="744" height="316" alt="google_sheet_urls" src="https://github.com/user-attachments/assets/9fc96843-4161-4363-8790-362e9f277e8b" />
+=======
+>>>>>>> 0382fbb (notion backup v3)
