@@ -1,0 +1,279 @@
+{
+  "name": "AI News",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        16
+      ],
+      "id": "2eaa9dc9-888d-4832-8291-c1e1d87b8c36",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "42f8789c-0f48-45f5-b6da-4c80318b4862",
+              "name": "news",
+              "value": "https://news.google.com/rss/search?q=openAI,anthropic,gemini&hl=en-US&gl=US&ceid=US:en",
+              "type": "string"
+            },
+            {
+              "id": "80281f84-bfb5-4dcd-9804-2edd60b56de6",
+              "name": "openai",
+              "value": "https://openai.com/news/rss.xml",
+              "type": "string"
+            },
+            {
+              "id": "57ed7f13-5197-4e66-8ceb-98c3f0443192",
+              "name": "anthropic",
+              "value": "https://www.anthropic.com/engineering",
+              "type": "string"
+            },
+            {
+              "id": "7a804409-9b2d-420f-af9a-eed0c99bc94b",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        16
+      ],
+      "id": "c2f62faa-6815-4784-827f-e53040164b27",
+      "name": "URLs"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.anthropic }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        80,
+        16
+      ],
+      "id": "69afed7c-8e22-4f08-94c8-be90ec694ae2",
+      "name": "get RSS feed"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You're a senior tech specialist with focus on latest AI technology development and trends. You closely monitor the major companies like openAI, google and Anthropic for their latest AI development. You will pick first 10 articles and output in the following format."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        288,
+        16
+      ],
+      "id": "bb1c3723-81d4-4e5e-bfee-3d1ec7367334",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        208
+      ],
+      "id": "e4e0e387-bb85-4635-8e0d-12c1a223fc77",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "1dc7oxA4JK3GKMix",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[{\n\t\"title\": \"Users say they are seeing ads on ChatGPT. OpenAI says it's not true. - Business Insider\",\n\t\"url\": \"https://news.google.com/rss/articles/CBMigwFBVV95cUxPYTFsZGJRRjJXRTQ3aFRNbXRrcVlTUkVJWklWYlNOSmdUaGozWUJuVml6aFRGeU1YRnBrQnpIOUE1RlJNblh1T0lOYWxWYl9SeGQ3N1B6d0VjVThJSENQM3l2Ym1lMDc2TlA4Z0h5T2pnWFJjTkR0Nnk1Ukk3dDZoS0l1MA?oc=5\",\n    \"pubDate\": \"Sat, 06 Dec 2025 22:01:00 GMT\"\n}]"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        208
+      ],
+      "id": "9a91af95-e420-4688-88e6-78918a3c651a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet newsList = [];\nfor (const item of $input.all()) {\n  let output = item.json.output;\n  for (const listItem of output) {\n    newsList.push(listItem.title + '\\n' + listItem.url + '\\n' + listItem.pubDate);\n  }\n  // newsList.push(item.json.output[0]);\n}\n\n// return $input.all();\nreturn [{ list: newsList.join('\\n\\n') }]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        16
+      ],
+      "id": "b0bb3c4e-b60b-4f90-8913-3b6dcdcd6b98",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "to": "Uf25353ad4ec88dd88dc7db2f3b305a0a",
+        "messages": {
+          "values": [
+            {
+              "text": "={{ $json.list }}"
+            }
+          ]
+        }
+      },
+      "type": "@aotoki/n8n-nodes-line-messaging.lineMessaging",
+      "typeVersion": 1,
+      "position": [
+        848,
+        16
+      ],
+      "id": "ad1d9c86-8355-4843-b475-88c1bf86fdb6",
+      "name": "Line Messaging",
+      "credentials": {
+        "lineMessagingApi": {
+          "id": "AoLJzjO2AK0sywR5",
+          "name": "Line Messaging account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "events": [
+          "message"
+        ]
+      },
+      "type": "@aotoki/n8n-nodes-line-messaging.lineMessagingTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        208
+      ],
+      "id": "1f81c11a-f6fe-4ad9-896a-d3f06b269c6c",
+      "name": "Line Messaging Trigger",
+      "webhookId": "b6762df3-2692-4a21-97f7-91cf9a662ae4",
+      "credentials": {
+        "lineMessagingApi": {
+          "id": "AoLJzjO2AK0sywR5",
+          "name": "Line Messaging account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URLs": {
+      "main": [
+        [
+          {
+            "node": "get RSS feed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get RSS feed": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Line Messaging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d2107d4f-f3ce-48be-b9fb-29ef43c10b7f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d532cac2f2fb92b6dc742f3aad9f5fa44adbf1327f6052a9488ddfddbec2ade3"
+  },
+  "id": "ULkxkSBi6Xmuzo3E",
+  "tags": []
+}
