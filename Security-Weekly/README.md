@@ -16,7 +16,7 @@ Here is a breakdown of the workflow's key actions:
 
 3.  **News URL Extraction**: An AI agent (using OpenAI's Chat Model) is used to extract the URL of the latest "資安週報" (Security Weekly) article.
 
-4.  **News Summarization**: An AI agent (using Anthropic's Chat Model) summarizes the news article from the CISO's perspective, focusing on software supply chains, AI-related attacks, and suggested action items.
+4.  **News Summarization**: An AI agent (using Google's Gemini Model) summarizes the news article from the CISO's perspective, focusing on software supply chains, AI-related attacks, and suggested action items.
 
 5.  **Message Formatting**: The summarized news report is formatted into a message suitable for sending to a LINE chat.
 

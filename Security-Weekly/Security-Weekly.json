@@ -8,7 +8,7 @@
             {
               "field": "weeks",
               "triggerAtDay": [
-                3
+                2
               ],
               "triggerAtHour": 11,
               "triggerAtMinute": 30
@@ -67,7 +67,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        896,
+        1072,
         192
       ],
       "id": "7576c2c1-d0ce-4fc8-a511-28924cc04796",
@@ -88,7 +88,7 @@
       "type": "@aotoki/n8n-nodes-line-messaging.lineMessaging",
       "typeVersion": 1,
       "position": [
-        1296,
+        1456,
         -16
       ],
       "id": "a31a6394-cf81-49ff-bf0f-023e079fd66c",
@@ -133,37 +133,12 @@
     },
     {
       "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "builtInTools": {},
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.3,
-      "position": [
-        416,
-        192
-      ],
-      "id": "55320328-512e-4dda-a3d7-ce8f2a372c3b",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "QQTvNkiw1Eei6R5Y",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let item = $input.first().json.output;\n// console.log (item);\n\n// let summary = 'abc';\nlet summary = '供應鏈：\\n' + item.supply_chain + '\\n\\nAI:\\n ' + item.AI + '\\n\\n建議行動：\\n' + item.action + '\\n\\n' + item.link;\n\n// return $input.all();\nreturn [{ summary }]"
+        "jsCode": "let item = $input.first().json.output;\n// console.log (item);\n\n// let summary = 'abc';\nlet summary = '供應鏈：\\n' + item.supply_chain + '\\n\\nAI:\\n' + item.AI + '\\n\\n建議行動：\\n' + item.action + '\\n\\n' + item.link;\n\n// return $input.all();\nreturn [{ summary }]"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1104,
+        1264,
         -16
       ],
       "id": "8b5a4b9a-884e-4ce9-975e-085db2eddf21",
@@ -175,13 +150,13 @@
         "text": "={{ $json.output.link }}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "You're the CISO of a major compancy. You closely monitor latest security incidents and plan action items and make strategic decisions in response to the news. \nYou will focus on news in the the following areas:\n1. software supply chains, such as vulnerabilities discovered in cloud services, npm packages, office tools and so on.\n2. new attacks related with AI technology or vulnerabilities discovered with AI tools.\n3. action items or strategy in response.\n4. article link\nOutput in the following format in Traditional Chinese"
+          "systemMessage": "You're the CISO of a major compancy. You closely monitor latest security incidents and plan action items and make strategic decisions in response to the news. \nYou will focus on news in the the following areas:\n1. software supply chain, such as vulnerabilities discovered or exploited in cloud services (GCP, AWS, Azure,) popular developer frameworks (react, next, tailwind, php), tools and so on.\n2. attacks or vulnerabilities related with AI tools or LLM. news of AI governance or compliance.\n3. action items or strategy in response.\n4. article link\nOutput in the following format in Traditional Chinese"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        752,
+        928,
         0
       ],
       "id": "1dc344d2-9613-4620-a2e3-1f505bf75cbd",
@@ -217,7 +192,7 @@
       "type": "@aotoki/n8n-nodes-line-messaging.lineMessaging",
       "typeVersion": 1,
       "position": [
-        1104,
+        1264,
         144
       ],
       "id": "2320bc48-10cb-4fb4-87c6-cc21276b4176",
@@ -242,15 +217,54 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        752,
+        416,
         192
       ],
-      "id": "89162240-e5f7-4c5d-b305-9c4d47db516e",
-      "name": "OpenAI Chat Model1",
+      "id": "adaca4e5-83f2-4d0d-ac2f-29ee170a5998",
+      "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
           "id": "QQTvNkiw1Eei6R5Y",
           "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.output.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        736,
+        0
+      ],
+      "id": "06ade2b2-b75a-4dc0-8d20-e9a45226faf1",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-5-20250929",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        928,
+        192
+      ],
+      "id": "9adc5cb0-db66-4e8c-a4e0-d21557b34a1c",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "RddA5iUNz27grLoZ",
+          "name": "Anthropic account"
         }
       }
     }
@@ -313,19 +327,8 @@
       "main": [
         [
           {
-            "node": "summarize news",
+            "node": "HTTP Request1",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "get weekly news url",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -371,7 +374,29 @@
         ]
       ]
     },
-    "OpenAI Chat Model1": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "get weekly news url",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "summarize news",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
       "ai_languageModel": [
         [
           {
@@ -392,7 +417,7 @@
     "errorWorkflow": "21nlJfyXdAieKixu",
     "timeSavedPerExecution": 5
   },
-  "versionId": "44b978dc-406d-46ed-a5e6-6c18fc9fd126",
+  "versionId": "6311ad68-4fa7-43f2-b083-64688f1f8951",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "062ea64aba2dc73b0b0d16cc9a5bd0c7b8e0d92119bead8dd32f9c6fc5903f72"
